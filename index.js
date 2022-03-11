@@ -5,6 +5,7 @@ const { color, err } = require('./config.json');
 const fs = require('fs');
 const moment = require('moment');
 const { MessageEmbed } = require('discord.js');
+
 const client = new Client({
     intents: [
         "GUILDS",
@@ -26,8 +27,6 @@ const client = new Client({
 
 client.commands = new Collection();
 client.aliases = new Collection();
-
-require('./message')(client);
 
 ["command"].forEach(handler => {
     require(`./handlers/${handler}`)(client);
