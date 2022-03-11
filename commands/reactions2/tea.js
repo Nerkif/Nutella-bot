@@ -1,7 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const { color } = require('./../../config.json')
-const { no, yes, nut } = require('../../emoji.json');
-const request = require('request')
 module.exports = {
     name: 'tea',
     aliases: ["Налить чай"],
@@ -10,24 +7,22 @@ module.exports = {
     example: "`+tea`",
     cooldown: 3,
     async execute (message, args) {
-  request.get(`https://g.tenor.com/v1/search?q=${"tea"}&key=${"K8YTIPE640UW"}&limit=${"60"}`, (err, res, body)=> {
-  if (err) {
-    return console.error('Загрузка не удалась:', err);
-  }
+  let links = ["https://i.gifer.com/3f4u.gif", "https://media.discordapp.net/attachments/773984556818497616/896065848626798612/45646.gif", "https://media.discordapp.net/attachments/773984556818497616/896065841123168296/4545452199.gif", "https://media.discordapp.net/attachments/744583395157213217/896685857854079057/540x298_0xac120003_12072077001592314812.gif"]
+
 if (message.mentions.users.first()) {
       const answer = new MessageEmbed()
-      .setColor(color)
+      .setColor("#ff0051")
       .setDescription(`<@${message.author.id}> налил(-а) чай <@${message.mentions.users.first().id}>`)
-      .setImage(JSON.parse(body).results[Math.floor(Math.random() * JSON.parse(body).results.length)].media[0].gif.url)
-      message.reply({embeds: [answer]})
+      .setImage(links[Math.floor(Math.random() * links.length)])
+      message.channel.send({embeds: [answer]})
 } 
  else {
     const answer2 = new MessageEmbed()
-      .setColor(color)
+      .setColor("#ff0051")
       .setDescription(`<@${message.author.id}> налил(-а) себе чай`)
-      .setImage(JSON.parse(body).results[Math.floor(Math.random() * JSON.parse(body).results.length)].media[0].gif.url)
-      message.reply({embeds: [answer2]})
-}})}
+      .setImage(links[Math.floor(Math.random() * links.length)])
+      message.channel.send({embeds: [answer2]})
+}}
 } //Если есть пользователь выполнить 1 код. Если нет, то первый
 
 /*

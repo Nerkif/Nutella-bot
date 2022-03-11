@@ -1,7 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const { color } = require('./../../config.json')
-const { no, yes, nut } = require('../../emoji.json');
-const request = require('request')
 module.exports = {
     name: 'sleep',
     aliases: ["Sleep", "SLEEP", "спать", "Спать"],
@@ -10,13 +7,11 @@ module.exports = {
     example: "`+sleep`",
     cooldown: 3,
     async execute (message, args) {
-request.get(`https://g.tenor.com/v1/search?q=${"sleep"}&key=${"K8YTIPE640UW"}&limit=${"60"}`, (err, res, body)=> {
-  if (err) {
-    return console.error('Загрузка не удалась:', err);
-  }
+let links = ["https://media.discordapp.net/attachments/773984556818497616/896064595003867196/1546709211_orig.gif?width=1042&height=582", "https://media.discordapp.net/attachments/773984556818497616/896064595112902666/anime-sleep-60.gif", "https://media.discordapp.net/attachments/773984556818497616/896064590239125584/anime-sleep-23.gif?width=961&height=582",
+"https://media.discordapp.net/attachments/773984556818497616/896064757780594688/anime-sleepy.gif"]
     const answer2 = new MessageEmbed()
-      .setColor(color)
+      .setColor("#ff0051")
       .setDescription(`<@${message.author.id}> отправился(-ась) спать 😴`)
-      .setImage(JSON.parse(body).results[Math.floor(Math.random() * JSON.parse(body).results.length)].media[0].gif.url)
-      message.reply({embeds: [answer2]})
-})}}
+      .setImage(links[Math.floor(Math.random() * links.length)])
+      message.channel.send({embeds: [answer2]})
+}}

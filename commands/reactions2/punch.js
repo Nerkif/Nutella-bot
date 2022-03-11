@@ -1,7 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const { color } = require('./../../config.json')
-const { no, yes, nut } = require('../../emoji.json');
-const request = require('request')
 module.exports = {
     name: 'punch',
     aliases: ["punch", "удар", "ударить"],
@@ -10,23 +7,14 @@ module.exports = {
     example: "`+punch`",
     cooldown: 3,
     async execute (message, args) {
-      const embed = new MessageEmbed()
-      .setTitle(`Nutella | Реакции ${nut}`) 
-      .setColor(color)
-      .setDescription(`<@${message.author.id}>, вы не ввели пользователя!`)
-      if(!args[0]) {
-      return message.reply({embeds: [embed]})}
-
-      if (!message.mentions.users.first()) return //проверка, есть ли там пользователь
-        if (message.mentions.users.first().id == message.author.id) return //нельзя взаимодействовать с собой
+      if (!message.mentions.users.first()) return message.channel.send("**Укажите пользователя**");//проверка, есть ли там пользователь
+        if (message.mentions.users.first().id == message.author.id) return message.channel.send("**Нельзя применять команду к себе!**");//нельзя взаимодействовать с собой
        // if (message.author.id != '720252938802561105') return
-        request.get(`https://g.tenor.com/v1/search?q=${"punch"}&key=${"K8YTIPE640UW"}&limit=${"60"}`, (err, res, body)=> {
-  if (err) {
-    return console.error('Загрузка не удалась:', err);
-  }
+        let links = ["https://media.discordapp.net/attachments/773984556818497616/896061478027800606/anime-smash.gif", "https://media.discordapp.net/attachments/773984556818497616/896061475494441040/anime-punch-anime.gif", "https://media.discordapp.net/attachments/773984556818497616/896061472998834216/double-punch-anime-double-punch.gif", "https://media.discordapp.net/attachments/773984556818497616/896061471950241913/anime-punch.gif",
+        "https://media.discordapp.net/attachments/773984556818497616/896061469110702140/rin243109-blue-exorcist.gif"]
       const answer = new MessageEmbed()
-      .setColor(color)
+      .setColor("#ff0051")
       .setDescription(`<@${message.author.id}> ударил(-а) <@${message.mentions.users.first().id}>`)
-      .setImage(JSON.parse(body).results[Math.floor(Math.random() * JSON.parse(body).results.length)].media[0].gif.url)
-      message.reply({embeds: [answer]}) // танцы: https://giffiles.alphacoders.com/763/76396.gif
-  })}}
+      .setImage(links[Math.floor(Math.random() * links.length)])
+      message.channel.send({embeds: [answer]}) // танцы: https://giffiles.alphacoders.com/763/76396.gif
+  }}

@@ -1,7 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const { color } = require('./../../config.json')
-const { no, yes, nut } = require('../../emoji.json');
-const request = require('request')
 module.exports = {
     name: 'pat',
     aliases: ["pat", "погладить"],
@@ -10,24 +7,15 @@ module.exports = {
     example: "`+pat`",
     cooldown: 3,
     async execute (message, args) {
-      const embed = new MessageEmbed()
-      .setTitle(`Nutella | Реакции ${nut}`) 
-      .setColor(color)
-      .setDescription(`<@${message.author.id}>, вы не ввели пользователя!`)
-      if(!args[0]) {
-      return message.reply({embeds: [embed]})}
-      
-      if (!message.mentions.users.first()) return //проверка, есть ли там пользователь
-        if (message.mentions.users.first().id == message.author.id) return //нельзя взаимодействовать с собой
+      if (!message.mentions.users.first()) return message.channel.send("**Укажите пользователя**");//проверка, есть ли там пользователь
+        if (message.mentions.users.first().id == message.author.id) return message.channel.send("**Нельзя применять команду к себе!**");//нельзя взаимодействовать с собой
        // if (message.author.id != '720252938802561105') return
-       request.get(`https://g.tenor.com/v1/search?q=${"pat"}&key=${"K8YTIPE640UW"}&limit=${"60"}`, (err, res, body)=> {
-  if (err) {
-    return console.error('Загрузка не удалась:', err);
-  }
+        let links = ["https://media.discordapp.net/attachments/773984556818497616/896059614569828352/kanna-kamui-pat.gif", "https://media.discordapp.net/attachments/773984556818497616/896059612640473118/neet-anime.gif", "https://media.discordapp.net/attachments/773984556818497616/896059611927433246/umaru-frown.gif", "https://media.discordapp.net/attachments/773984556818497616/896059611298271252/pat-anime.gif",
+        "https://media.discordapp.net/attachments/773984556818497616/896059610623008808/anime-pat.gif"]
       const answer = new MessageEmbed()
-      .setColor(color)
+      .setColor("#ff0051")
       .setDescription(`<@${message.author.id}> погладил(-а) <@${message.mentions.users.first().id}>`)
-      .setImage(JSON.parse(body).results[Math.floor(Math.random() * JSON.parse(body).results.length)].media[0].gif.url)
-      message.reply({embeds: [answer]})
-  })}}
+      .setImage(links[Math.floor(Math.random() * links.length)])
+      message.channel.send({embeds: [answer]})
+  }}
  
