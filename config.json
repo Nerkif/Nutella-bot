@@ -1,4 +1,11 @@
 {
-  "token": "token",
-  "default_prefix": "+",
+  "token": "TOKEN",
+  "default_prefix": "PREFIX",
+  "default_value": "VALUE",
+  "color": "ebb059",
+  "err": "#DC143C",
+  "success": "#27db2d",
+  "prem": "🔱",
+  "orange": "🔸",
+  "blue": "🔹"
 }

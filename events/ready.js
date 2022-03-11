@@ -3,9 +3,10 @@ module.exports = async (client) => {
   let i = 0;
   setInterval(()=>{
       let activity = [
-      `Nutella | +help`,
+      `+help`,
+      `за ${client.guilds.cache.size} серверов`,
       `за ${client.users.cache.size} участников`,
-      `за лучшим сервером!`,
+      `v0.0.3b`,
       ]
       const index = Math.floor(i);
       client.user.setActivity(activity[index], {type: "WATCHING"});
