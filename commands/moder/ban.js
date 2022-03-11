@@ -1,63 +1,69 @@
-const Discord = require("discord.js");
-const { MessageEmbed } = require("discord.js");
-const { yes, no } = require('../../emoji.json')
-const db = require('quick.db')
-const { err, color, success } = require('../../config.json')
+const { MessageEmbed, Permissions } = require('discord.js');
+const db = require('quick.db');
+const { no, yes } = require('../../emoji.json');
+const { color, err, success } = require('./../../config.json')
+
 module.exports = {
     name: 'ban',
-    aliases: ['ban'],
-    example: "`!ban [@пользователь] [причина]`",
+    aliases: ["b", "banish"],
     category: "Модерация",
-    description: "Бан",
+    description: "Забанить участника",
+    example: "`+ban`",
     cooldown: 3,
-  async execute (message, args) {
-        let economy = db.fetch(`moder_${message.guild.id}`)
-            if(economy === 1) return true;
-    let noperm = new MessageEmbed()
+    accessableby: "Administrator",
+    async execute (message, args) {
+
+    let noperms = new MessageEmbed()
+    .setTitle(`Ошибка`)
     .setColor(err)
-    .setDescription(`${no} У вас недостаточно полномочий, чтобы кого-то забанить`)
-    let targets = new MessageEmbed()
+    .setDescription(`${no} | У меня недостаточно прав - Банить участников`)
+
+  if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) 
+  return message.channel.send({embeds: [noperms]})  //.guild.me.
+
+  let noperms2 = new MessageEmbed()
+    .setTitle(`Ошибка`)
     .setColor(err)
-    .setDescription(`${no} Пожалуйста, укажите пользователя!`)
+    .setDescription(`${no} | У вас недостаточно прав - Банить участников`)
+
+  if (!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) 
+  return message.channel.send({embeds: [noperms2]}) 
+
+  let embed5 = new MessageEmbed()
+      .setTitle(`Произошла ошибка!`)
+      .setColor(err)
+      .setDescription(`${no} | Вы не указали пользователя которого хотите забанить !`);
+            if(!args[0]) {
+                return message.channel.send({embeds: [embed5]})} 
     
-    let role = new MessageEmbed()
-    .setColor(err)
-    .setDescription(`${no} Пожалуйста, укажите причину!`)
-    let hight = new MessageEmbed()
-    .setColor(err)
-    .setDescription(`${no} Участник выше вас`)
-    const target = message.mentions.members.first()
-    
-    const reason = args.slice(1).join(" ")
-    
-    if(!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send(noperm)
-    
-    if(!message.guild.me.hasPermission("BAN_MEMBERS")) return
-    
-    if(!args[0]) return message.channel.send({embeds: [role]});
-    
-    if(!target) return message.channel.send({embeds: [targets]});
-    
-    if(target.roles.highest.position >= message.member.roles.highest.position || message.author.id !== message.guild.owner.id) {
-      return message.channel.send({embeds: [hight]});
+            let banMember = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(r => r.user.username.toLowerCase() === args[0].toLocaleLowerCase()) || message.guild.members.cache.find(ro => ro.displayName.toLowerCase() === args[0].toLocaleLowerCase());
+            
+            if (!banMember) return message.channel.send("**Пользователя нет на сервере**");
+            
+            if (banMember.user.bot) return message.channel.send("**Вы не можете забанить бота!**")
+            if (banMember === message.member) return message.channel.send("**Вы не можете забанить себя!**")
+
+            var reason = args.slice(1).join(" ");
+
+            if (!banMember.bannable) return message.channel.send("**Не могу забанить этого пользователя**")
+            try {
+            banMember.send(`Вам выдали бан на сервере \`${message.guild.name}\`\nПричина - ${reason || "Без причины"}\nМодератор: ${message.member}`).then(() =>
+                message.guild.members.ban(banMember, { days: 7, reason: reason })).catch(() => null)
+            } catch {
+                message.guild.members.ban(banMember, { days: 7, reason: reason })
+            }
+            if (reason) {
+            var sembed = new MessageEmbed()
+                .setColor(color)
+                .setAuthor(message.guild.name, message.guild.iconURL())
+                .setDescription(`**${banMember.user.username}** был забанен за ${reason} ${yes}`)
+            message.channel.send({embeds: [sembed]})
+            } else {
+                var sembed2 = new MessageEmbed()
+                .setColor(color)
+                .setAuthor(message.guild.name, message.guild.iconURL())
+                .setDescription(`**${banMember.user.username}** был забанен ${yes}`)
+            message.channel.send({embeds: [sembed2]})
     }
-    
-    if(target.id === message.author.id) return
-    
-    if(target.bannable) {
-      let embed = new MessageEmbed()
-      .setColor(success)
-      .setDescription(`Забанен: \`${target}\`\nПричина: \`${reason || "Причина не указана"}\``)
-      
-      message.channel.send({embeds: [embed]});
-      
-      target.ban()
-      
-      message.delete()
-      
-    } else {
-      return
+        }
     }
-    return
-  }
-};

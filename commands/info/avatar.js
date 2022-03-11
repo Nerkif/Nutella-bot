@@ -20,7 +20,8 @@ module.exports = {
             .setColor(member.displayHexColor)
             .setImage(member.user.displayAvatarURL({size: 4096, dynamic: true}))
             .setURL(member.user.avatarURL())
-        message.channel.send({embeds: [avatar]})
+        message.reply({embeds: [avatar]})
+        
             // права 
             .catch(() => message.channel.send('**ОШИБКА:** Нету разрешения `встраивать ссылки` '));
 

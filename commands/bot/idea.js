@@ -1,41 +1,53 @@
 const Discord = require("discord.js");
 const { MessageEmbed } = require("discord.js");
 const db = require("quick.db");
-const { no, yes } = require('../../emoji.json');
+const { yes, no } = require('../../emoji.json')
+const { color, success, err } = require('../../config.json')
 module.exports = {
     name: 'idea',
-    category: "Fun",
-    example: "`!idea [предложение]`",
-    description: "Предложения", 
+    category: "Разное",
+    example: "+idea [предложение]",
+    description: "Предложить идею для бота",
     cooldown: 3,
   async execute (message, args) {
    
-  let channel = '913894635217223781' 
-  
-  const suggestionQuery = args.join(" ");
-  if(!suggestionQuery) return message.reply("Напишите то, что хотите предложить для Бота");
-  await message.delete()
-      const now = new Date();
-  const embed = new MessageEmbed()   
-       .setTitle(`> Nutella | Идеи`)
-       .setThumbnail(message.guild.iconURL({ dynamic: true }))
-       .addField('❯ Автор', `>>> ${message.member.user.tag}`, true)
-       .addField('❯ Контент', `>>> ${suggestionQuery}`)
-       .setColor("ORANGE")
-       .setFooter("Спасибо за идею", message.member.user.displayAvatarURL({ format: 'png' }))
+  let channel = '940119240608997397'
+
+  const suggestion = args.join(" ");
+  let embed1 = new MessageEmbed()
+  .setTitle("Nutella | Ошибка")
+  .setColor(err)
+  .setDescription(`${no} | Вы не написали то, что хотите предложить`)
+  if(!suggestion) return message.channel.send({embeds: [embed1]})
+
+  const embed = new MessageEmbed()        
+       .setTitle("Nutella | Предложения")
+       .addField('❯ Автор', `>>> ${message.member.user.tag}`)
+       .addField(`Сервер`, `${message.guild.name}`)
+       .addField('❯ Предложение', `>>> ${suggestion}`)
+       .setColor(color)
+       .setFooter("Спасибо за идею!", message.member.user.displayAvatarURL({ format: 'png' }))
+       .setThumbnail(message.author.displayAvatarURL({ format: 'png' }))
        .setTimestamp();
-       
+
+    let guild = "913874913704681472" 
+    let users = message.client.guilds.cache.get(guild).members.cache.get(message.author.id)
+    if(!users){
     const done = new MessageEmbed()
-       .setDescription(`${yes} | <@${message.author.id}>, Ваше сообщение представляется здесь, <#${channel}>\n\nЗайдите на [Support](https://discord.gg/8a29sUcTGe) чтобы увидеть ответ`)
-       .setColor("GREEN")
-       .setFooter("Спасибо за помощь!")
-       
-    message.channel.send({embeds: [done]})
-    
+       .setTitle("Nutella | Предложения")
+       .setDescription(`${yes} | Спасибо вам за идею, мы вам благодарны!\nВаше сообщение представляется здесь - [Ссылка](https://discord.gg/EWFVFD3jKU)`)
+       .setColor(color)
+   message.reply({embeds: [done]})
+    }else{
+    if(users.user.id === message.author.id){
+        const done = new MessageEmbed()
+            .setTitle("Nutella | Предложения")
+            .setDescription(`${yes} | Спасибо вам за идею, мы вам благодарны!\nВаше сообщение представляется здесь - <#${channel}>`)
+            .setColor(color)
+        message.reply({embeds: [done]})
+    }
+}
     let msgEmbed = await message.client.channels.cache.get(channel).send({embeds: [embed]})
+    
   }
 }
-/*
-client.on('guildCreate', guild => {
-    console.log('Бота добавили на новый сервер: '+guild.name) 
-})*/

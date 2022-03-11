@@ -1,4 +1,7 @@
 const { MessageEmbed } = require('discord.js');
+const { color } = require('./../../config.json')
+const { no, yes, nut } = require('../../emoji.json');
+const request = require('request')
 module.exports = {
     name: 'bite',
     aliases: ["кусь", "укусить"],
@@ -7,15 +10,22 @@ module.exports = {
     example: "`+bite`",
     cooldown: 3, 
     async execute (message, args) {
+      const embed = new MessageEmbed()
+      .setTitle(`Nutella | Реакции ${nut}`)
+      .setColor(color)
+      .setDescription(`<@${message.author.id}>, вы не ввели пользователя!`)
+      if(!args[0]) {
+      return message.reply({embeds: [embed]})} 
+
       if (!message.mentions.users.first()) return //проверка, есть ли там пользователь
         if (message.mentions.users.first().id == message.author.id) return //нельзя взаимодействовать с собой
-          let links = ["https://images-ext-1.discordapp.net/external/0k9qN2AuqNB98kvGMoi0HSTaBAaivgUdMzZNIxWHhqM/https/media.tenor.com/images/887b65d101c12a3e39b2aee887adb93f/tenor.gif",
-      "https://images-ext-1.discordapp.net/external/FV4uVV13OGg2n9LxUEYeSU9DvAW3BuDHCBvvS_-7zIE/https/media.tenor.com/images/3632813a0264ec1fc44525ff86cb1224/tenor.gif",
-      "https://media.discordapp.net/attachments/773984556818497616/898881835239604265/bite34-nutella.gif",
-      "https://media.discordapp.net/attachments/773984556818497616/898881840931307580/bite1-nutella.gif"]
+        request.get(`https://g.tenor.com/v1/search?q=${"bite-gifs"}&key=${"K8YTIPE640UW"}&limit=${"60"}`, (err, res, body)=> {
+  if (err) {
+    return console.error('Загрузка не удалась:', err);
+  }
       const answer = new MessageEmbed()
-      .setColor("#ff0051")
+      .setColor(color)
       .setDescription(`<@${message.author.id}> укусил(-а) <@${message.mentions.users.first().id}>`)
-      .setImage(links[Math.floor(Math.random() * links.length)])
-      message.channel.send({embeds: [answer]})
-  }}
+      .setImage(JSON.parse(body).results[Math.floor(Math.random() * JSON.parse(body).results.length)].media[0].gif.url)
+      message.reply({embeds: [answer]})
+  })}}

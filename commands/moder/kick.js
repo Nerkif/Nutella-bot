@@ -1,55 +1,73 @@
-const { MessageEmbed } = require("discord.js")
-const moment = require('moment')
-const Discord = require("discord.js");
-const { yes, no } = require('../../emoji.json')
-const db = require('quick.db')
-const { err, color, success } = require('../../config.json')
+const { MessageEmbed, Permissions } = require('discord.js');
+const db = require('quick.db');
+const { no, yes } = require('../../emoji.json');
+const { color } = require('./../../config.json')
 module.exports = {
     name: 'kick',
-    aliases: ['kick'],
-    example: "`!kick [@пользователь] [причина]`",
+    aliases: ["kick", "кик"],
     category: "Модерация",
-    description: "Кик",
+    description: "Выгнать участника",
+    example: "`+kick`",
     cooldown: 3,
-  async execute (message, args) {
-    let economy = db.fetch(`moder_${message.guild.id}`)
-            if(economy === 1) return true;
+    accessableby: "Administrator",
+    async execute (message, args) {
     let noperms = new MessageEmbed()
-    .setColor(err)
-    .setDescription(`${no} У вас недостаточно прав`)
-    let targets = new MessageEmbed()
-    .setColor(err)
-    .setDescription(`${no} Пожалуйста, укажите пользователя!`)
-    
-    let role = new MessageEmbed()
-    .setColor(err)
-    .setDescription(`${no} Пожалуйста, укажите причину!`)
-    let hight = new MessageEmbed()
-    .setColor(err)
-    .setDescription(`${no} Участник выше вас`)
-    if (!message.member.hasPermission("KICK_MEMBERS")){
-   return message.channel.send(noperms)
-   }
-const mentionedMember = message.mentions.members.first();
-const reason = args.slice(1).join(" ")
-          if (!mentionedMember) return message.channel.send({embeds: [targets]});
-        if (!mentionedMember) return
-        if (mentionedMember.id === message.author.id) return
-        if (mentionedMember.roles.highest.position >= message.member.roles.highest.position && message.author.id !== message.guild.owner.id) {
-            return message.channel.send({embeds: [hight]});
-        }
-        if (mentionedMember.kickable) {
-            const embed = new MessageEmbed()
-            .setAuthor(`${message.author.username} - (${message.author.id})`, message.author.displayAvatarURL({dynamic: true}))
-            .setThumbnail(mentionedMember.user.displayAvatarURL({dynamic: true}))
-            .setColor(success)
-            .setDescription(`Кикнут: ${mentionedMember.user.username}\nПричина: ${reason || "Причина не указана"}
-            `)
-        message.channel.send({embeds: [embed]})
-        mentionedMember.kick()
-        } else {
-            return
-        }
-        return;
+    .setTitle(`Ошибка`)
+    .setColor(color)
+    .setDescription(`${no} | У меня недостаточно прав - Выгонять участников`)
+  if (!message.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) 
+  return message.channel.send({embeds: [noperms]})  //.guild.me.
+
+  let noperms2 = new MessageEmbed()
+    .setTitle(`Ошибка`)
+    .setColor(color)
+    .setDescription(`${no} | У вас недостаточно прав - Выгонять участников`)
+  if (!message.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) 
+  return message.channel.send({embeds: [noperms2]}) 
+
+    let target = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+    if (!args[0]) return message.channel.send("**Введите пользователя которого хотите кикнуть!**");
+    if (!target) return message.channel.send("**Пользователя нет на сервере**");
+    if (!target.kicknable) return message.channel.send("**Не могу кикнуть этого пользователя**")
+    if (target.user.bot) return message.channel.send("**Вы не можете кикнуть бота!**");
+    if (!target) {
+      return message.channel.send(
+        `**${message.author.username}**, Пожалуйста, укажите человека, которого вы хотите кикнуть`);
+      }
+
+    if (target.id === message.guild.ownerId) {
+      return message.channel.send("Вы не можете кикнуть Владельца сервера!");
     }
-}
+
+    if (target.id === message.author.id) {
+      return message.channel.send(
+        `**${message.author.username}**, вы не можете кикнуть себя`);
+      }
+
+    let reason = args.slice(1).join(" ");
+    if (!reason) reason = "Без причины";
+
+    const embed = new MessageEmbed()
+      .setTitle("Nutella | Модерация")
+      .setColor(color)
+      .setThumbnail(target.user.displayAvatarURL)
+      .setDescription(
+        `**Кикнут участник** \nКикнут: ${target} \nПричина: ${reason} \nМодератор: ${message.member}`)
+
+      .setTimestamp();
+
+    message.channel.send({embeds: [embed]});
+
+    target.kick(args[0]);
+
+    target.send(`${yes} | Вас выгнали с сервера \`${message.guild.name}\`\nПричина кика: ${reason}\nМодератор: ${message.member}`);
+
+  },
+
+};
+
+
+
+
+
+

@@ -1,46 +1,77 @@
+const Discord = require("discord.js");
 const { MessageEmbed } = require("discord.js");
-const { no, yes } = require('../../emoji.json');
-const { color } = require('../../config.json')
 const db = require("quick.db");
+const date = require('date-and-time');
+const { yes, no } = require('../../emoji.json')
+const { color, success, err } = require('../../config.json')
 module.exports = {
-    name: "bugreport",
-    aliases: ["bgr", "bug"],
-    category: "Fun",
-    example: "`!bugreport [неисправность]`",
-    description: "Сообщить об неисправности",
+    name: 'bug',
+    aliases: ["bug-rep", "баг"],
+    category: "Бот",
+    example: "+bug [ошибка]",
+    description: "Сообщить об ошибке",
     cooldown: 3,
   async execute (message, args) {
-     const now = new Date();
-         let user =
-          message.mentions.members.first() ||
-          message.guild.members.cache.get(args[0]) ||
-          message.guild.members.cache.find(
-            r =>
-              r.user.username.toLowerCase() === args.join(" ").toLocaleLowerCase()
-          ) ||
-          message.guild.members.cache.find(
-            r => r.displayName.toLowerCase() === args.join(" ").toLocaleLowerCase()
-          ) ||
-          message.member;
-    let channel = 'channel_id'
-    const suggestionQuery = args.join(' ');
-  if(!suggestionQuery) return message.reply("Использование команды: \`bug описание проблемы\`");
-  await message.delete()
-  const embed = new MessageEmbed()   
-        .setTitle("Nutella | Баг-Репорт")
-        .setThumbnail(message.guild.iconURL({ dynamic: true }))
-        .addField("❯ Автор", `>>> ${message.member.user.tag}`, true)
-        .addField("❯ Контент", `>>> ${suggestionQuery}`)
-        .addField("❯ С сервера", message.guild.name)
-        .setColor(color);
-        message.client.channels.cache.get(channel).send({embeds: [embed]})
-       
-    const done = new MessageEmbed()
-       .setDescription(`${yes} | <@${message.author.id}>, Ваше сообщение представляется здесь, <#${channel}>\n\nЗайдите на [Support](https://discord.gg/8a29sUcTGe) чтобы увидеть ответ`)
-       .setColor("GREEN")
-       .setFooter("Спасибо за помощь!")
-       
-    message.channel.send({embeds: [done]})
+    let channel = "940119202734419978"
     
+    if (message.attachments.size > 0) {
+            const attachment = message.attachments.first();
+            if (attachment.width) {
+                let embed = new MessageEmbed()
+               .setTitle(`Nutella | Баг-Репорт`)
+               .addField('❯ Автор', `>>> ${message.member.user.tag}`)
+               .setColor(color)
+               .setFooter("Спасибо за оповещение ошибок!", message.member.user.displayAvatarURL({ format: 'png' }))
+               .setThumbnail(message.author.displayAvatarURL({ format: 'png' }))
+               .setTimestamp()
+               .setImage(attachment.url)
+               
+            
+        message.client.channels.cache.get(channel).send({embeds: [embed]})
+          }
+        }else{
+
+
+  const suggestionQuery = args.join(" ");
+
+  let embed1 = new MessageEmbed()
+  .setTitle(`Nutella | Ошибка`)
+  .setColor(err)
+  .setDescription(`${no} | Вы не написали проблему бота`)
+  if(!suggestionQuery) return message.channel.send({embeds: [embed1]})
+  
+  const embed = new MessageEmbed()
+      
+       .setTitle(`Nutella | Баг-Репорт`)
+       .addField('❯ Автор', `>>> ${message.member.user.tag}`)
+       .addField('❯ Контент', `>>> ${suggestionQuery}`)
+       .setColor(color)
+       .setFooter("Спасибо за ошибку", message.member.user.displayAvatarURL({ format: 'png' }))
+       .setThumbnail(message.author.displayAvatarURL({ format: 'png' }))
+       .setTimestamp();
+       
+            let guild = "913874913704681472" 
+            let users = message.client.guilds.cache.get(guild).members.cache.get(message.author.id)
+            let dm = new MessageEmbed()
+            .setTitle("Nutella | Ошибка")
+            .setColor(err)
+            .setDescription(`${no} | Я не могу вам прислать личное сообещние`)
+            if(!users){
+                const done = new MessageEmbed()
+               .setTitle("Nutella | Баг-Репорт")
+               .setDescription(`${yes} | Спасибо за оповещение о проблеме!\nВаше сообщение представляется здесь, [Ссылка](https://discord.gg/5d8EedyH3r)`)
+               .setColor(color)
+                message.author.send({embeds: [done]}).catch(() => message.channel.send({embeds: [dm]}))
+            }else{
+            if(users.user.id === message.author.id){
+            const done = new MessageEmbed()
+               .setTitle("Nutella | Баг-Репорт")
+               .setDescription(`${yes} | Спасибо за отзыв, мы очень благодарны вам!\nВаш отзыв представляется здесь, <#${channel}>`)
+               .setColor(color)
+            message.author.send({embeds: [done]}).catch(() => message.channel.send({embeds: [dm]}))
+            }}
+    message.delete()
+    let msgEmbed = await message.client.channels.cache.get(channel).send({embeds: [embed]})
+    }
   }
 }

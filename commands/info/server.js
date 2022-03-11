@@ -23,9 +23,9 @@ module.exports = {
     const serverembed = new MessageEmbed()
       .setAuthor(`${message.guild.name}`, message.guild.iconURL())
       .setThumbnail(servericon)
-      .addField(
+      .addField( 
         `**Основная Информация ${iconuser}**`,
-        `Всего участников: \`${message.guild.memberCount}\` \nЛюдей: \`${
+        `\nВладелец: <@${message.guild.ownerId}>\nВсего участников: \`${message.guild.memberCount}\` \nЛюдей: \`${
           message.guild.members.cache.filter((member) => !member.user.bot).size
         }\` \nБотов: \`${
           message.guild.members.cache.filter((member) => member.user.bot).size
@@ -51,10 +51,10 @@ module.exports = {
         }\``
       )
       .setThumbnail(message.guild.iconURL())
-      .setFooter(`ID: ${message.guild.id}`, message.guild.iconURL())
+      .setFooter(`${message.author.username}#${message.author.discriminator}`, message.author.avatarURL())
       .setColor(color)
       .setTimestamp();
 
-    message.channel.send({ embeds: [serverembed] });
+    message.reply({ embeds: [serverembed] });
   },
 };
