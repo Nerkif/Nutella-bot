@@ -1,17 +1,13 @@
 # Nutella-bot
-Discord.js bot v13. Russian bot
+Discord.js bot v13. Countries and States !
 
-🇷🇺 Бот создан в России, он набирал популярность среди многих серверов. Завоевал 42 тысячи пользователей, 
-и был верифицирован. К сожалению, проект был закрыт. Надеюсь, его файлы помогут вашим ботам.
+🇷🇺 Nutella - Бывший верифицированный бот. Проект был закрыт и поэтому его файлы выставлены публично. Со временем я (владелец бота) дополняю репозиторий новыми командами и функциями. 
+Сейчас же я занимаюсь разработкой системы «Страны и Государства» где каждый пользователь сервер сможет создать свою собственную страну и продвигать её в лидеры
 
-Об обновлении:
-Я разрабатываю новую систему, которой ещё не было. Сейчас она выпущена в beta версии (11.03.2022)
-Система "Государства и страны".
+Удачи !
 
-🇺🇸 The bot was created in Russia, it was gaining popularity among many servers. Won 42 thousand users,
-and was verified. Unfortunately, the project was closed. I hope his files will help your bots.
+🇺🇸 Nutella - is a former verified bot. The project was closed and therefore its files are publicly exposed. Over time, I (the owner of the bot) supplement the repository with new commands and functions.
+Now I am developing a system of «Countries and States» where each server user will be able to create his own country and promote it to the leaders
 
-About the update:
-I'm developing a new system that hasn't been there yet. It is now released in beta version (11.03.2022)
-The system of "States and countries".
+Good luck!
 
